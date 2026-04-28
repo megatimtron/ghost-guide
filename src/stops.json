@@ -2,11 +2,11 @@
   {
     "id": 1,
     "name": "Gradante / P&M Market",
-    "address": "Orange St, New Haven, CT",
-    "lat": 41.3094,
-    "lng": -72.9229,
-    "task": "Take a photo of the 'Orange St' street sign with your backpack in frame.",
-    "verifyHint": "image must show an Orange Street sign with a backpack visible",
+    "address": "367 Orange St, New Haven, CT",
+    "lat": 41.3115,
+    "lng": -72.9237,
+    "task": "Step outside and photograph the nearest 'Orange St' street sign with your backpack in the frame. (This is your test shot — confirm camera + verification work before you head out.)",
+    "verifyHint": "image must show an Orange Street sign with a backpack visible in the frame",
     "reward": "Backpack Drink",
     "rewardLabel": "Take a swig from the bag — the warm-up sip.",
     "kind": "backpack"
