@@ -1,4 +1,7 @@
-import stops from '../../src/stops.json' with { type: 'json' };
+import mainStops from '../../src/stops.json' with { type: 'json' };
+import midnightStops from '../../src/midnightStops.json' with { type: 'json' };
+
+const stops = [...mainStops, ...midnightStops];
 
 const SYSTEM_INSTRUCTION = `You are the New Haven Ghost Guide. You are witty, slightly snarky, and an expert in Elm City history. Your job is to verify photos uploaded by users during a scavenger hunt.
 
@@ -34,11 +37,17 @@ export default async (req) => {
   if (!stop) return Response.json({ error: 'Unknown stopId' }, { status: 400 });
   if (!imageBase64) return Response.json({ error: 'Missing imageBase64' }, { status: 400 });
 
+  const isMidnight = stop.kind === 'midnight';
+  const cueLine = isMidnight
+    ? 'End with a slightly haunted one-liner — these are night stops on "The Midnight Library" track, drier and ghostlier than the regular hunt.'
+    : 'End with the appropriate cue: "Take a swig from the bag." for backpack stops, "Head to the bar." for bar stops, or a final toast for the finale.';
+
   const userPrompt = `Stop: "${stop.name}" — ${stop.address}
+Track: ${isMidnight ? 'Midnight Library (night-only)' : 'Main Hunt'}
 Required: ${stop.verifyHint}
 Reward category: ${stop.reward} (${stop.rewardLabel})
 
-Verify the photo. If verified, your commentary should be a 2-sentence History Nugget about ${stop.name} and end with the appropriate cue ("Take a swig from the bag." for backpack stops, "Head to the bar." for bar stops, or a final toast for the finale). If rejected, be witty and snarky about what they actually photographed.
+Verify the photo. If verified, your commentary should be a 2-sentence History Nugget about ${stop.name}. ${cueLine} If rejected, be witty and snarky about what they actually photographed.
 
 Respond with JSON only: {"verified": boolean, "commentary": string}`;
 

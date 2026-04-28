@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import stops from '../stops.json';
 import MapView from '../components/MapView';
 import CameraUpload from '../components/CameraUpload';
 import BackpackTimer from '../components/BackpackTimer';
@@ -8,8 +7,8 @@ import { verifyLocationWithGemini } from '../lib/verify';
 
 const SIP_MS = 10 * 60 * 1000;
 
-export default function Hunt({ progress, setProgress, onComplete }) {
-  const stop = stops[progress.currentStop];
+export default function Hunt({ stops, hunt, setHunt, onComplete, onExit, huntKind = 'main' }) {
+  const stop = stops[hunt.currentStop];
   const [userPos, setUserPos] = useState(null);
   const [geoError, setGeoError] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -17,12 +16,11 @@ export default function Hunt({ progress, setProgress, onComplete }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const stop = watchPosition(setUserPos, (e) => setGeoError(e.message));
-    return stop;
+    return watchPosition(setUserPos, (e) => setGeoError(e.message));
   }, []);
 
   const distance = useMemo(() => {
-    if (!userPos) return null;
+    if (!userPos || !stop) return null;
     return haversineMeters(userPos, stop);
   }, [userPos, stop]);
 
@@ -37,12 +35,12 @@ export default function Hunt({ progress, setProgress, onComplete }) {
       setVerdict(res);
       if (res.verified) {
         const next = {
-          ...progress,
-          completed: [...progress.completed, stop.id],
-          history: [...progress.history, { stopId: stop.id, commentary: res.commentary, at: Date.now() }],
-          timerEndsAt: Date.now() + SIP_MS,
+          ...hunt,
+          completed: [...hunt.completed, stop.id],
+          history: [...hunt.history, { stopId: stop.id, commentary: res.commentary, at: Date.now() }],
+          timerEndsAt: huntKind === 'midnight' ? null : Date.now() + SIP_MS,
         };
-        setProgress(next);
+        setHunt(next);
       }
     } catch (e) {
       setError(e.message || String(e));
@@ -52,37 +50,51 @@ export default function Hunt({ progress, setProgress, onComplete }) {
   };
 
   const goNext = () => {
-    const nextIdx = progress.currentStop + 1;
+    const nextIdx = hunt.currentStop + 1;
     if (nextIdx >= stops.length) {
       onComplete();
       return;
     }
-    setProgress({ ...progress, currentStop: nextIdx, timerEndsAt: null });
+    setHunt({ ...hunt, currentStop: nextIdx, timerEndsAt: null });
     setVerdict(null);
   };
 
-  const stopsDone = progress.completed.length;
+  const stopsDone = hunt.completed.length;
   const showNext = verdict?.verified;
+  const isMidnight = huntKind === 'midnight';
+
+  if (!stop) {
+    return (
+      <div className="px-6 py-10 text-center">
+        <p className="text-zinc-300">No stops in this hunt.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-full flex-col gap-5 px-5 py-6">
       <header className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-fuchsia-300/80">
-            Stop {stop.id} of {stops.length}
+          <p className={'text-xs uppercase tracking-[0.25em] ' + (isMidnight ? 'text-cyan-300/80' : 'text-fuchsia-300/80')}>
+            {isMidnight ? 'Midnight Library' : 'The Hunt'} · Stop {hunt.currentStop + 1} of {stops.length}
           </p>
-          <h2 className="text-2xl font-bold text-zinc-50">{stop.name}</h2>
+          <h2 className={'text-2xl font-bold text-zinc-50 ' + (isMidnight ? 'app-neon' : '')}>{stop.name}</h2>
           <p className="text-sm text-zinc-400">{stop.address}</p>
         </div>
-        <div className="rounded-full bg-zinc-900 px-3 py-1 text-xs text-zinc-300">
-          {stopsDone}/{stops.length} done
-        </div>
+        <button
+          onClick={onExit}
+          className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs text-zinc-300"
+        >
+          {stopsDone}/{stops.length} · exit
+        </button>
       </header>
 
       <MapView stop={stop} userPos={userPos} />
 
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-fuchsia-300">Your Task</h3>
+        <h3 className={'text-sm font-semibold uppercase tracking-wider ' + (isMidnight ? 'text-cyan-300' : 'text-fuchsia-300')}>
+          {isMidnight ? 'Night Challenge' : 'Your Task'}
+        </h3>
         <p className="mt-1 text-zinc-100">{stop.task}</p>
         <div className="mt-3 flex items-center gap-2 text-sm">
           {distance == null ? (
@@ -97,9 +109,9 @@ export default function Hunt({ progress, setProgress, onComplete }) {
       </div>
 
       <BackpackTimer
-        endsAt={progress.timerEndsAt}
+        endsAt={hunt.timerEndsAt}
         currentStreet={stop.address.split(',')[0]}
-        onDone={() => setProgress({ ...progress, timerEndsAt: null })}
+        onDone={() => setHunt({ ...hunt, timerEndsAt: null })}
       />
 
       {!verdict?.verified && (
@@ -111,16 +123,20 @@ export default function Hunt({ progress, setProgress, onComplete }) {
           className={
             'rounded-2xl border p-4 ' +
             (verdict.verified
-              ? 'border-emerald-700/60 bg-emerald-950/40'
+              ? isMidnight
+                ? 'border-cyan-700/60 bg-cyan-950/40'
+                : 'border-emerald-700/60 bg-emerald-950/40'
               : 'border-rose-700/60 bg-rose-950/40')
           }
         >
-          <p className={verdict.verified ? 'text-emerald-200' : 'text-rose-200'}>
+          <p className={verdict.verified ? (isMidnight ? 'text-cyan-100' : 'text-emerald-200') : 'text-rose-200'}>
             {verdict.commentary}
           </p>
           {verdict.verified && (
             <div className="mt-3 rounded-xl bg-zinc-900/70 p-3">
-              <p className="text-xs uppercase tracking-wider text-fuchsia-300">{stop.reward}</p>
+              <p className={'text-xs uppercase tracking-wider ' + (isMidnight ? 'text-cyan-300' : 'text-fuchsia-300')}>
+                {stop.reward}
+              </p>
               <p className="text-zinc-100">{stop.rewardLabel}</p>
             </div>
           )}
@@ -136,9 +152,18 @@ export default function Hunt({ progress, setProgress, onComplete }) {
       {showNext && (
         <button
           onClick={goNext}
-          className="rounded-2xl bg-fuchsia-600 px-6 py-4 text-lg font-semibold text-white shadow-lg shadow-fuchsia-900/40 active:scale-[0.98]"
+          className={
+            'rounded-2xl px-6 py-4 text-lg font-semibold shadow-lg active:scale-[0.98] ' +
+            (isMidnight
+              ? 'bg-cyan-400 text-black shadow-cyan-500/40'
+              : 'bg-fuchsia-600 text-white shadow-fuchsia-900/40')
+          }
         >
-          {progress.currentStop + 1 >= stops.length ? '🥂 Finish Hunt' : 'Next Stop →'}
+          {hunt.currentStop + 1 >= stops.length
+            ? isMidnight
+              ? '👻 Reveal the Reward'
+              : '🥂 Finish Hunt'
+            : 'Next Stop →'}
         </button>
       )}
     </div>

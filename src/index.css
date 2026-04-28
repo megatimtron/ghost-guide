@@ -4,13 +4,69 @@
 html, body, #root {
   height: 100%;
   margin: 0;
-  background: #0b0a12;
-  color: #e7e2f2;
+  background: var(--app-bg);
+  color: var(--app-fg);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
 
+:root {
+  --app-bg: #0b0a12;
+  --app-fg: #e7e2f2;
+  --app-accent: #d946ef;
+  --app-accent-soft: rgba(217, 70, 239, 0.18);
+  --app-accent-glow: rgba(217, 70, 239, 0.45);
+  --app-card: rgba(24, 22, 32, 0.7);
+  --app-border: rgba(63, 57, 78, 0.7);
+}
+
+html.night {
+  --app-bg: #000004;
+  --app-fg: #d6fff4;
+  --app-accent: #00ffd1;
+  --app-accent-soft: rgba(0, 255, 209, 0.15);
+  --app-accent-glow: rgba(0, 255, 209, 0.55);
+  --app-card: rgba(8, 14, 14, 0.85);
+  --app-border: rgba(0, 255, 209, 0.25);
+}
+
+html.night body {
+  background:
+    radial-gradient(1200px 600px at 50% -20%, rgba(0, 255, 209, 0.08), transparent 60%),
+    radial-gradient(900px 600px at 50% 110%, rgba(0, 200, 255, 0.06), transparent 60%),
+    var(--app-bg);
+}
+
 button {
   font-family: inherit;
+}
+
+.app-accent { color: var(--app-accent); }
+.app-accent-bg { background: var(--app-accent); }
+.app-card { background: var(--app-card); border: 1px solid var(--app-border); }
+.app-glow { box-shadow: 0 0 0 1px var(--app-border), 0 8px 30px var(--app-accent-glow); }
+
+html.night .app-neon {
+  text-shadow: 0 0 6px var(--app-accent-glow), 0 0 18px var(--app-accent-glow);
+}
+
+@keyframes ghost-rise {
+  0%   { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.9; }
+  100% { transform: translateY(-20vh) translateX(var(--drift, 0px)) rotate(var(--spin, 0deg)); opacity: 0; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.8; }
+  50%      { opacity: 1; }
+}
+.animate-pulse-soft { animation: pulse-soft 2.4s ease-in-out infinite; }
+
+.spectral-particle {
+  position: absolute;
+  font-size: 28px;
+  animation: ghost-rise linear forwards;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px var(--app-accent-glow));
 }
