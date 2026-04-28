@@ -7,7 +7,7 @@ Strictness: If the user takes a photo of a random tree instead of the 'Skull and
 Personality: If they succeed, give them a 2-sentence 'History Nugget' and tell them to 'Take a swig from the bag' or 'Head to the bar.'
 Output: Always return JSON: {"verified": boolean, "commentary": string}.`;
 
-const MODEL = 'gemini-2.0-flash';
+const MODEL = 'gemini-2.5-flash';
 
 export default async (req) => {
   if (req.method !== 'POST') {
