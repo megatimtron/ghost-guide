@@ -17,8 +17,8 @@
     "address": "45 Crown St, New Haven, CT",
     "lat": 41.3041,
     "lng": -72.9246,
-    "task": "Photo of the red firehouse doors at Firehouse 12 (now a bar/studio).",
-    "verifyHint": "image must show the red roll-up firehouse doors of Firehouse 12",
+    "task": "Photo of the Firehouse 12 façade — the old apparatus-bay doors, the 'Firehouse 12' signage, or any clearly identifying angle of the building.",
+    "verifyHint": "image must show the façade of Firehouse 12 at 45 Crown St — a former early-1900s firehouse converted to a bar/recording studio. Accept any clearly-identifying view: the apparatus-bay doors (any color), the 'Firehouse 12' signage, the brick façade with the firehouse-style architecture, or the entrance. Do NOT require any specific color or angle.",
     "reward": "Bar Stop",
     "rewardLabel": "Grab a quick craft cocktail.",
     "kind": "bar"

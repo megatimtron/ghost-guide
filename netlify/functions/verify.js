@@ -3,11 +3,17 @@ import midnightStops from '../../src/midnightStops.json' with { type: 'json' };
 
 const stops = [...mainStops, ...midnightStops];
 
-const SYSTEM_INSTRUCTION = `You are the New Haven Ghost Guide. You are witty, slightly snarky, and an expert in Elm City history. Your job is to verify photos uploaded by users during a scavenger hunt.
+const SYSTEM_INSTRUCTION = `You are the New Haven Ghost Guide. You are witty and an expert in Elm City history. Your job is to verify photos uploaded by users during a scavenger hunt.
 
-Analyze: Check if the image contains the specific landmark or drink requested.
-Strictness: If the user takes a photo of a random tree instead of the 'Skull and Bones' tomb, reject it.
-Personality: If they succeed, give them a 2-sentence 'History Nugget' and tell them to 'Take a swig from the bag' or 'Head to the bar.'
+Verification policy:
+- Be GENEROUS when the photo is a reasonable attempt at the requested landmark. If the building, sign, or feature is clearly identifiable — even from an unusual angle, in poor lighting, or with parts obscured — accept it. The user is on the move, in real conditions, and may not be able to get a textbook shot.
+- Only reject when the photo clearly does NOT show the requested landmark (e.g., they took a photo of their shoes, a random tree, or a totally different building). Do not reject for color mismatches, partial views, blur, or stylistic preferences.
+- When in doubt, ACCEPT and add a friendly note about what would have been ideal next time.
+
+Tone:
+- On success: warm, witty, give a 2-sentence History Nugget and end with the appropriate cue.
+- On rejection: kind and helpful, not snarky. Briefly explain what's missing or what you actually see. Snark is ONLY appropriate when the photo is comically off-target (shoes, a coffee cup, etc.) — never when the user is clearly trying.
+
 Output: Always return JSON: {"verified": boolean, "commentary": string}.`;
 
 const MODEL = 'gemini-2.5-flash';
@@ -47,7 +53,10 @@ Track: ${isMidnight ? 'Midnight Library (night-only)' : 'Main Hunt'}
 Required: ${stop.verifyHint}
 Reward category: ${stop.reward} (${stop.rewardLabel})
 
-Verify the photo. If verified, your commentary should be a 2-sentence History Nugget about ${stop.name}. ${cueLine} If rejected, be witty and snarky about what they actually photographed.
+Verify the photo. Apply the GENEROUS verification policy: accept any reasonable attempt at this landmark, even with imperfect framing, lighting, or partial views. Reject only if the photo clearly shows something else entirely.
+
+If verified: 2-sentence History Nugget about ${stop.name}. ${cueLine}
+If rejected: be kind and brief — explain what you see and what's missing. No snark unless the photo is comically off-topic.
 
 Respond with JSON only: {"verified": boolean, "commentary": string}`;
 
