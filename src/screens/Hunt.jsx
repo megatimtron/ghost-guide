@@ -59,6 +59,26 @@ export default function Hunt({ stops, hunt, setHunt, onComplete, onExit, huntKin
     setVerdict(null);
   };
 
+  const onSkip = () => {
+    if (!confirm(`Skip "${stop.name}"? It won't unlock the reward but the hunt will continue.`)) return;
+    const nextIdx = hunt.currentStop + 1;
+    const isLast = nextIdx >= stops.length;
+    const updated = {
+      ...hunt,
+      completed: [...hunt.completed, stop.id],
+      history: [
+        ...hunt.history,
+        { stopId: stop.id, commentary: '(skipped — could not verify)', skipped: true, at: Date.now() },
+      ],
+      timerEndsAt: null,
+      currentStop: isLast ? hunt.currentStop : nextIdx,
+    };
+    setHunt(updated);
+    setVerdict(null);
+    setError(null);
+    if (isLast) onComplete();
+  };
+
   const stopsDone = hunt.completed.length;
   const showNext = verdict?.verified;
   const isMidnight = huntKind === 'midnight';
@@ -115,7 +135,17 @@ export default function Hunt({ stops, hunt, setHunt, onComplete, onExit, huntKin
       />
 
       {!verdict?.verified && (
-        <CameraUpload onSubmit={onSubmit} busy={busy} disabled={false} />
+        <>
+          <CameraUpload onSubmit={onSubmit} busy={busy} disabled={false} />
+          <button
+            type="button"
+            onClick={onSkip}
+            disabled={busy}
+            className="-mt-2 self-center text-sm text-zinc-400 underline-offset-4 hover:text-zinc-200 hover:underline disabled:opacity-40"
+          >
+            Stuck? Skip this stop →
+          </button>
+        </>
       )}
 
       {verdict && (

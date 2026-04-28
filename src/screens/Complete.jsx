@@ -21,9 +21,16 @@ export default function Complete({ stops, hunt, onReset, onBack, isMidnight }) {
               key={s.id}
               className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 text-left"
             >
-              <p className={'text-xs uppercase tracking-wider ' + (isMidnight ? 'text-cyan-300' : 'text-fuchsia-300')}>
-                Stop {s.id} · {s.reward}
-              </p>
+              <div className="flex items-center justify-between gap-2">
+                <p className={'text-xs uppercase tracking-wider ' + (isMidnight ? 'text-cyan-300' : 'text-fuchsia-300')}>
+                  Stop {s.id} · {s.reward}
+                </p>
+                {entry?.skipped && (
+                  <span className="rounded-full border border-amber-700/60 bg-amber-950/40 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-200">
+                    Skipped
+                  </span>
+                )}
+              </div>
               <p className="text-zinc-100">{s.name}</p>
               {entry?.commentary && (
                 <p className="mt-1 text-sm text-zinc-400">{entry.commentary}</p>
