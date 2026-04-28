@@ -15,8 +15,8 @@
     "id": 2,
     "name": "Firehouse 12",
     "address": "45 Crown St, New Haven, CT",
-    "lat": 41.3050,
-    "lng": -72.9286,
+    "lat": 41.3052,
+    "lng": -72.9258,
     "task": "Photo of the red firehouse doors at Firehouse 12 (now a bar/studio).",
     "verifyHint": "image must show the red roll-up firehouse doors of Firehouse 12",
     "reward": "Bar Stop",
@@ -49,14 +49,14 @@
   },
   {
     "id": 5,
-    "name": "The Anchor Spa",
-    "address": "272 College St, New Haven, CT",
-    "lat": 41.3068,
-    "lng": -72.9308,
-    "task": "Photo of the blue neon 'Anchor' sign.",
-    "verifyHint": "image must show the blue neon Anchor sign of The Anchor Spa",
-    "reward": "Finale",
-    "rewardLabel": "AI toasts to your successful hunt!",
+    "name": "Wooster Square",
+    "address": "Wooster Square Park, New Haven, CT",
+    "lat": 41.3032,
+    "lng": -72.9180,
+    "task": "Photo of the cherry trees, the Christopher Columbus statue, or the Frank Pepe's neon sign on Wooster St.",
+    "verifyHint": "image must show one of: (a) the cherry trees / open green of Wooster Square Park, (b) the Christopher Columbus statue at the center of the square, or (c) the Frank Pepe's Pizzeria neon sign at 157 Wooster St",
+    "reward": "Wooster Square Finale",
+    "rewardLabel": "A century of Italian-immigrant New Haven, condensed into one block. Toast the cherry trees. Slice optional.",
     "kind": "finale"
   }
 ]

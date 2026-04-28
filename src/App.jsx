@@ -49,7 +49,13 @@ export default function App() {
   };
 
   const onResume = (key) => {
-    setProgress({ ...progress, activeHunt: key });
+    const stops = HUNTS[key].stops;
+    const safeIdx = Math.min(progress[key].currentStop, stops.length - 1);
+    setProgress({
+      ...progress,
+      activeHunt: key,
+      [key]: { ...progress[key], currentStop: Math.max(0, safeIdx) },
+    });
     setScreen('hunt');
   };
 

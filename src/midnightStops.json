@@ -12,18 +12,6 @@
     "kind": "midnight"
   },
   {
-    "id": 102,
-    "name": "Grove Street Cemetery Gates",
-    "address": "227 Grove St, New Haven, CT",
-    "lat": 41.3128,
-    "lng": -72.9280,
-    "task": "Photo of the Egyptian Revival sandstone gates with the inscription 'The Dead Shall Be Raised.'",
-    "verifyHint": "image must show the brownstone Egyptian Revival cemetery gates of Grove Street Cemetery, with lotus-capital columns and the inscription 'The Dead Shall Be Raised'",
-    "reward": "Promise of Resurrection",
-    "rewardLabel": "Read the inscription out loud. Don't laugh — they listen.",
-    "kind": "midnight"
-  },
-  {
     "id": 103,
     "name": "The Taft Hotel",
     "address": "265 College St, New Haven, CT",

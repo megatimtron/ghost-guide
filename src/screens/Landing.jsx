@@ -53,7 +53,7 @@ export default function Landing({
           {nightMode && (
             <HuntCard
               label="The Midnight Library"
-              sublabel={`${midnightStops.length} ghostly stops · night-only`}
+              sublabel={`${midnightStops.length} ghostly stop${midnightStops.length === 1 ? '' : 's'} · night-only`}
               stateLabel={
                 midnightDone
                   ? 'Reward unlocked'
